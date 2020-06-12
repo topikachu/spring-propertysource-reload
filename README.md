@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-  runtimeOnly 'io.github.topikachu:propertysource-reload-spring-boot-starter:0.0.1'
+  runtimeOnly 'io.github.topikachu:propertysource-reload-spring-boot-starter:0.0.2'
 }
 ```
 
@@ -49,7 +49,7 @@ Maven:
 <dependency>
     <groupId>io.github.topikachu</groupId>
     <artifactId>propertysource-reload-spring-boot-starter</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <scope>runtime</scope>
 </dependency>
 ```

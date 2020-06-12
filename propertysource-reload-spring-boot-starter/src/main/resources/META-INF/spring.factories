@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.topikachu.properties.reload.ConfigReloadAutoConfiguration
+org.springframework.cloud.bootstrap.BootstrapConfiguration=io.github.topikachu.properties.reload.BootstrapConfiguration

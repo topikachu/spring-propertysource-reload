@@ -8,6 +8,10 @@
 - [Repository](#repository)
 - [Requirements and Downloads](#requirements-and-downloads)
 - [How to enable external property source reloading](#how-to-enable-external-property-source-reloading)
+- [Reload Strategy](#reload-strategy)
+- [PropertySourceReloadEvent](#propertysourcereloadevent)
+- [Environment Changes](#environment-changes)
+- [Delete Configuration at Runtime](#delete-configuration-at-runtime)
 - [Contributions](#contributions)
 - [Licenses](#licenses)
 
@@ -70,9 +74,41 @@ Available Spring Boot bootstrap configuration parameter (either  `bootstrap.prop
 propertysource.reload.properties-files=config/foo.properties,config/bar.properties
 propertysource.reload.poll-interval=5000
 propertysource.reload.ignore-resource-not-found=true
+propertysource.reload.strategy=refresh_environment
+```
+Once the contents of the configuration file specified in `propertysource.reload.properties-files` are change, the application is reload automatically.
+
+# Reload Strategy
+There are four strategies
+1. refresh_scope  
+  This is the default strategy. Execute `ContextRefresher.refresh()`.
+1. refresh_environment  
+  Execute `ContextRefresher.refreshEnvironment()`.  
+1. exit_application  
+  Execute [`SpringApplication.exit()`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/SpringApplication.html#exit-org.springframework.context.ApplicationContext-org.springframework.boot.ExitCodeGenerator...-)
+1. exit_application_force  
+  Execute [`SpringApplication.exit()`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/SpringApplication.html#exit-org.springframework.context.ApplicationContext-org.springframework.boot.ExitCodeGenerator...-)
+   and [`System.exit()`](https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#exit-int-)
+
+# PropertySourceReloadEvent
+There's a `PropertySourceReloadEvent` fired after each reload. To receive this event
+```java
+	@EventListener(PropertySourceReloadEvent.class)
+	public void onRefresh(PropertySourceReloadEvent event) {
+		System.out.println(String.join(",", event.getKeys()));
+		System.out.println(event.getFile().getName());
+		System.out.println(event.getFileEvent());
+	}
 ```
 
-Once the contents of the configuration file specified in `propertysource.reload.properties-files` are change, the application is reload automatically.
+# Environment Changes
+Please read [spring documentation](https://cloud.spring.io/spring-cloud-static/spring-cloud.html#_environment_changes) for detail.  
+In a short description, the `@ConfigurationProperties` beans are rebind, but `@Value` are not by default. Any bean using `@Value` to inject the configuration must use `@RefreshScope` to receive the new change.
+
+# Delete Configuration at Runtime
+It's tough to handle the configuration deletion. So try to always keep the keys at runtime. Another solution it to use "@RefreshScope" at any bean depending on the configuration may change during runtime.
+
+
 
 # Contributions
 

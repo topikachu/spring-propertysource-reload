@@ -16,8 +16,11 @@ import static io.github.topikachu.properties.reload.ReloadableProperties.ReloadS
 public class ReloadExecutor {
 
 	private ReloadableProperties reloadableProperties;
+
 	private ContextRefresher contextRefresher;
+
 	private ApplicationEventPublisher applicationEventPublisher;
+
 	private ConfigurableApplicationContext applicationContext;
 
 	@SuppressFBWarnings("DM_EXIT")
@@ -25,27 +28,28 @@ public class ReloadExecutor {
 		Set<String> keys;
 		if (reloadableProperties.getStrategy() == REFRESH_ENVIRONMENT) {
 			keys = contextRefresher.refreshEnvironment();
-		} else if (reloadableProperties.getStrategy() == REFRESH_SCOPE) {
+		}
+		else if (reloadableProperties.getStrategy() == REFRESH_SCOPE) {
 			keys = contextRefresher.refresh();
-		} else if (reloadableProperties.getStrategy() == EXIT_APPLICATION) {
+		}
+		else if (reloadableProperties.getStrategy() == EXIT_APPLICATION) {
 			SpringApplication.exit(applicationContext);
 			return;
-		} else if (reloadableProperties.getStrategy() == EXIT_APPLICATION_FORCE) {
+		}
+		else if (reloadableProperties.getStrategy() == EXIT_APPLICATION_FORCE) {
 			int status = SpringApplication.exit(applicationContext);
 			System.exit(status);
 			return;
-		} else {
+		}
+		else {
 			throw new ReloadableException("Not a valid reload strategy " + reloadableProperties.getStrategy());
 		}
-		if (reloadableProperties.getStrategy() == REFRESH_ENVIRONMENT || reloadableProperties.getStrategy() == REFRESH_SCOPE) {
+		if (reloadableProperties.getStrategy() == REFRESH_ENVIRONMENT
+				|| reloadableProperties.getStrategy() == REFRESH_SCOPE) {
 			applicationEventPublisher.publishEvent(
-					PropertySourceReloadEvent.builder()
-							.file(file)
-							.keys(keys)
-							.fileEvent(event)
-							.source(this)
-							.build());
+					PropertySourceReloadEvent.builder().file(file).keys(keys).fileEvent(event).source(this).build());
 		}
 
 	}
+
 }

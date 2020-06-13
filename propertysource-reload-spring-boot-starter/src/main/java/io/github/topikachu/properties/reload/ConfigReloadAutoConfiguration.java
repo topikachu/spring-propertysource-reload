@@ -16,31 +16,21 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @ConditionalOnClass(RefreshScope.class)
 @EnableConfigurationProperties(ReloadableProperties.class)
 public class ConfigReloadAutoConfiguration {
+
 	@Bean
 	public ReloadableWatch fileAlterationObserver(ReloadableProperties reloadableProperties,
-	                                              ReloadExecutor reloadExecutor
-	) {
-		ReloadableWatch reloadableWatch = ReloadableWatch.builder()
-				.reloadProperties(reloadableProperties)
-				.reloadExecutor(reloadExecutor)
-				.threadFactory(new ThreadPoolTaskExecutor())
-				.build();
+			ReloadExecutor reloadExecutor) {
+		ReloadableWatch reloadableWatch = ReloadableWatch.builder().reloadProperties(reloadableProperties)
+				.reloadExecutor(reloadExecutor).threadFactory(new ThreadPoolTaskExecutor()).build();
 		reloadableWatch.start();
 		return reloadableWatch;
 	}
 
-
 	@Bean
-	public ReloadExecutor reloadExecutor(ReloadableProperties reloadableProperties,
-	                                     ContextRefresher contextRefresher,
-	                                     ApplicationEventPublisher applicationEventPublisher,
-	                                     ConfigurableApplicationContext applicationContext) {
-		return ReloadExecutor.builder()
-				.reloadableProperties(reloadableProperties)
-				.contextRefresher(contextRefresher)
-				.applicationEventPublisher(applicationEventPublisher)
-				.applicationContext(applicationContext)
-				.build();
+	public ReloadExecutor reloadExecutor(ReloadableProperties reloadableProperties, ContextRefresher contextRefresher,
+			ApplicationEventPublisher applicationEventPublisher, ConfigurableApplicationContext applicationContext) {
+		return ReloadExecutor.builder().reloadableProperties(reloadableProperties).contextRefresher(contextRefresher)
+				.applicationEventPublisher(applicationEventPublisher).applicationContext(applicationContext).build();
 
 	}
 

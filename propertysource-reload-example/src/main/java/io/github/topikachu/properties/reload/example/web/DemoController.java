@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope
 public class DemoController {
 
-
 	@Autowired
 	private ApplicationProperties applicationProperties;
+
 	@Autowired
 	private Environment environment;
 
@@ -29,11 +29,11 @@ public class DemoController {
 
 	}
 
-
 	@EventListener(PropertySourceReloadEvent.class)
 	public void onRefresh(PropertySourceReloadEvent event) {
 		System.out.println(String.join(",", event.getKeys()));
 		System.out.println(event.getFile().getName());
 		System.out.println(event.getFileEvent());
 	}
+
 }

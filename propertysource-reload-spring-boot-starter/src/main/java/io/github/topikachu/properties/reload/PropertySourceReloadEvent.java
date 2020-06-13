@@ -10,10 +10,11 @@ import java.util.Set;
 @Getter
 public class PropertySourceReloadEvent extends ApplicationEvent {
 
-	private final FileEvent fileEvent;
-	protected File file;
-	protected Set<String> keys;
+	private FileEvent fileEvent;
 
+	private File file;
+
+	private Set<String> keys;
 
 	@Builder
 	public PropertySourceReloadEvent(Object source, File file, Set<String> keys, FileEvent fileEvent) {
@@ -24,8 +25,9 @@ public class PropertySourceReloadEvent extends ApplicationEvent {
 	}
 
 	public enum FileEvent {
-		CHANGE,
-		CREATE,
-		DELETE
+
+		CHANGE, CREATE, DELETE
+
 	}
+
 }

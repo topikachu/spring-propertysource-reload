@@ -1,6 +1,7 @@
 package io.github.topikachu.properties.reload;
 
 public class ReloadableException extends RuntimeException {
+
 	public ReloadableException() {
 	}
 
@@ -19,4 +20,5 @@ public class ReloadableException extends RuntimeException {
 	public ReloadableException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
+
 }

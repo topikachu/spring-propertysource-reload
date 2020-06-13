@@ -1,6 +1,5 @@
 package io.github.topikachu.properties.reload;
 
-
 import lombok.Builder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,11 +22,14 @@ import java.util.Objects;
 @Builder
 @Order
 public class ReloadablePropertySourceLocator implements PropertySourceLocator {
-	private final Log logger = LogFactory.getLog(getClass());
-	private ResourceLoader resourceLoader;
-	private ReloadableProperties reloadProperties;
-	public static final DefaultPropertySourceFactory FACTORY = new DefaultPropertySourceFactory();
 
+	private final Log logger = LogFactory.getLog(getClass());
+
+	private ResourceLoader resourceLoader;
+
+	private ReloadableProperties reloadProperties;
+
+	public static final DefaultPropertySourceFactory FACTORY = new DefaultPropertySourceFactory();
 
 	@Override
 	public PropertySource<?> locate(Environment environment) {
@@ -38,28 +40,28 @@ public class ReloadablePropertySourceLocator implements PropertySourceLocator {
 	public Collection<PropertySource<?>> locateCollection(Environment environment) {
 		CompositePropertySource reloadablePropertySources = new CompositePropertySource("ReloadablePropertySources");
 		reloadProperties.getPropertiesFiles().stream()
-				.filter(location -> location != null && !location.trim().equals(""))
-				.map(location -> {
+				.filter(location -> location != null && !location.trim().equals("")).map(location -> {
 					try {
 						String resolvedLocation = environment.resolveRequiredPlaceholders("file:" + location);
 						Resource resource = this.resourceLoader.getResource(resolvedLocation);
 						return FACTORY.createPropertySource(location, new EncodedResource(resource));
-					} catch (IllegalArgumentException | IOException ex) {
-						// Placeholders not resolvable or resource not found when trying to open it
+					}
+					catch (IllegalArgumentException | IOException ex) {
+						// Placeholders not resolvable or resource not found when trying
+						// to open it
 						if (reloadProperties.isIgnoreResourceNotFound()) {
 							if (logger.isInfoEnabled()) {
-								logger.info("Properties location [" + location + "] not resolvable: " + ex.getMessage());
+								logger.info(
+										"Properties location [" + location + "] not resolvable: " + ex.getMessage());
 							}
-						} else {
+						}
+						else {
 							throw new ReloadableException(ex);
 						}
 						return null;
 					}
-				})
-				.filter(Objects::nonNull)
-				.forEach(reloadablePropertySources::addPropertySource);
+				}).filter(Objects::nonNull).forEach(reloadablePropertySources::addPropertySource);
 		return Collections.singletonList(reloadablePropertySources);
 	}
-
 
 }

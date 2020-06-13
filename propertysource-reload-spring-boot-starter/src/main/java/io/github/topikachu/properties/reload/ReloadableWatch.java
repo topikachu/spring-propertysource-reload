@@ -15,12 +15,13 @@ import java.util.concurrent.ThreadFactory;
 @Builder
 public class ReloadableWatch {
 
-
 	private ReloadableProperties reloadProperties;
+
 	private ReloadExecutor reloadExecutor;
+
 	private FileAlterationMonitor monitor;
+
 	private ThreadFactory threadFactory;
-	;
 
 	@SneakyThrows
 	public void start() {
@@ -42,17 +43,15 @@ public class ReloadableWatch {
 				reloadExecutor.executeReload(file, PropertySourceReloadEvent.FileEvent.DELETE);
 			}
 		};
-		reloadProperties.getPropertiesFiles()
-				.forEach(propertyFile -> {
-					File file = new File(propertyFile);
-					File folder = file.getParentFile();
-					FileAlterationObserver observer = new FileAlterationObserver(folder, new NameFileFilter(file.getName()));
-					observer.addListener(propertySourceListener);
-					monitor.addObserver(observer);
-				});
+		reloadProperties.getPropertiesFiles().forEach(propertyFile -> {
+			File file = new File(propertyFile);
+			File folder = file.getParentFile();
+			FileAlterationObserver observer = new FileAlterationObserver(folder, new NameFileFilter(file.getName()));
+			observer.addListener(propertySourceListener);
+			monitor.addObserver(observer);
+		});
 		monitor.start();
 	}
-
 
 	@PreDestroy
 	@SneakyThrows
@@ -61,4 +60,5 @@ public class ReloadableWatch {
 			monitor.stop();
 		}
 	}
+
 }

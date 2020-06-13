@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 @Setter
 @ConfigurationProperties(prefix = "http")
 public class ApplicationProperties {
+
 	private String name;
+
 	private String bar;
+
 }

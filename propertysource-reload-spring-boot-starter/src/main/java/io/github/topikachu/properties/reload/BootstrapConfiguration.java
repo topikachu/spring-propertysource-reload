@@ -12,18 +12,18 @@ import org.springframework.core.io.ResourceLoader;
 @ConditionalOnProperty(value = "propertysource.reload.enabled", matchIfMissing = true)
 @ConditionalOnClass(RefreshScope.class)
 public class BootstrapConfiguration {
+
 	@EnableConfigurationProperties(ReloadableProperties.class)
 	@Configuration(proxyBeanMethods = false)
 	protected static class ReloadableConfiguration {
 
 		@Bean
-		public ReloadablePropertySourceLocator reloadablePropertySourceLocator(ReloadableProperties reloadableProperties, ResourceLoader resourceLoader) {
-			return ReloadablePropertySourceLocator.builder()
-					.reloadProperties(reloadableProperties)
-					.resourceLoader(resourceLoader)
-					.build();
+		public ReloadablePropertySourceLocator reloadablePropertySourceLocator(
+				ReloadableProperties reloadableProperties, ResourceLoader resourceLoader) {
+			return ReloadablePropertySourceLocator.builder().reloadProperties(reloadableProperties)
+					.resourceLoader(resourceLoader).build();
 		}
+
 	}
+
 }
-
-

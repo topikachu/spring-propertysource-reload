@@ -11,12 +11,19 @@ import java.util.List;
 @Setter
 @Getter
 public class ReloadableProperties {
+
 	private long pollInterval = 5000;
+
 	private List<String> propertiesFiles = Collections.emptyList();
+
 	private boolean ignoreResourceNotFound = true;
+
 	private ReloadStrategy strategy = ReloadStrategy.REFRESH_SCOPE;
 
 	public enum ReloadStrategy {
+
 		REFRESH_SCOPE, REFRESH_ENVIRONMENT, EXIT_APPLICATION, EXIT_APPLICATION_FORCE
+
 	}
+
 }

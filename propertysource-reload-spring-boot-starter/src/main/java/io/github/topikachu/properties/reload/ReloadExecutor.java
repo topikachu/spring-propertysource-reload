@@ -1,5 +1,6 @@
 package io.github.topikachu.properties.reload;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Builder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.context.refresh.ContextRefresher;
@@ -19,6 +20,7 @@ public class ReloadExecutor {
 	private ApplicationEventPublisher applicationEventPublisher;
 	private ConfigurableApplicationContext applicationContext;
 
+	@SuppressFBWarnings("DM_EXIT")
 	public void executeReload(File file, PropertySourceReloadEvent.FileEvent event) {
 		Set<String> keys;
 		if (reloadableProperties.getStrategy() == REFRESH_ENVIRONMENT) {

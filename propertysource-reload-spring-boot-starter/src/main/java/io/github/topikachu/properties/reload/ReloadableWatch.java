@@ -42,7 +42,7 @@ public class ReloadableWatch {
 				reloadExecutor.executeReload(file, PropertySourceReloadEvent.FileEvent.DELETE);
 			}
 		};
-		reloadProperties.getPropertiesFiles().stream()
+		reloadProperties.getPropertiesFiles()
 				.forEach(propertyFile -> {
 					File file = new File(propertyFile);
 					File folder = file.getParentFile();

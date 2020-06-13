@@ -8,7 +8,6 @@
         <version>0.0.3-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
-    <groupId>io.github.topikachu</groupId>
     <artifactId>propertysource-reload-example</artifactId>
     <version>0.0.3-SNAPSHOT</version>
     <url>https://github.com/topikachu/spring-propertysource-reload</url>

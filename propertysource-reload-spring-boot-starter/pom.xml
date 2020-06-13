@@ -8,7 +8,6 @@
         <version>0.0.3-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
-    <groupId>io.github.topikachu</groupId>
     <artifactId>propertysource-reload-spring-boot-starter</artifactId>
     <version>0.0.3-SNAPSHOT</version>
     <url>https://github.com/topikachu/spring-propertysource-reload</url>
@@ -37,6 +36,12 @@
             <version>2.7</version>
         </dependency>
         <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>4.0.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
@@ -49,4 +54,20 @@
         </dependency>
 
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

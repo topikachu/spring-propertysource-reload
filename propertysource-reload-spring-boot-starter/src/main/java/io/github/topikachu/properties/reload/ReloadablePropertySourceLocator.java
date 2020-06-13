@@ -17,6 +17,8 @@ import org.springframework.core.io.support.EncodedResource;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
 
 @Builder
 @Order
@@ -54,9 +56,9 @@ public class ReloadablePropertySourceLocator implements PropertySourceLocator {
 						return null;
 					}
 				})
-				.filter(resource -> resource != null)
+				.filter(Objects::nonNull)
 				.forEach(reloadablePropertySources::addPropertySource);
-		return Arrays.asList(reloadablePropertySources);
+		return Collections.singletonList(reloadablePropertySources);
 	}
 
 

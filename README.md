@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.topikachu:propertysource-reload-spring-boot-starter:0.0.3'
+  implementation 'io.github.topikachu:propertysource-reload-spring-boot-starter:0.0.4'
 }
 ```
 
@@ -53,7 +53,7 @@ Maven:
 <dependency>
     <groupId>io.github.topikachu</groupId>
     <artifactId>propertysource-reload-spring-boot-starter</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
 </dependency>
 ```
 
@@ -78,13 +78,13 @@ Other available Spring Boot bootstrap configuration parameter:
 propertysource.reload.poll-interval=5s
 propertysource.reload.strategy=refresh_environment
 propertysource.reload.max-wait-for-shutdown=2s
+propertysource.reload.max-wait-for-system-exit=10s
 propertysource.reload.ignore-resource-not-found=true
 propertysource.reload.ignore-resource-load-error=true
 ```
 Once the content of the configuration file specified in `propertysource.reload.properties-files` is change, the application is reload automatically.
 
 # Reload Strategy
-There are four strategies
 1. refresh_scope  
   This is the default strategy. Execute `ContextRefresher.refresh()`.
 1. refresh_environment  
@@ -94,6 +94,8 @@ There are four strategies
 1. exit_application_force  
   Execute [`SpringApplication.exit()`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/SpringApplication.html#exit-org.springframework.context.ApplicationContext-org.springframework.boot.ExitCodeGenerator...-)
    and [`System.exit()`](https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#exit-int-)
+1. restart  
+  Set `management.endpoint.restart.enabled=true` to enable this strategy. See `RestartEndpoint#restart` for details.
 
 # PropertySourceReloadEvent
 There's a `PropertySourceReloadEvent` fired after each reload. To receive this event

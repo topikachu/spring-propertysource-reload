@@ -11,7 +11,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.StringUtils;
 

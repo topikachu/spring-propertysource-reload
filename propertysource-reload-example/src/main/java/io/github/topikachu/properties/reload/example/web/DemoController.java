@@ -10,6 +10,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
+
 @RestController
 @RefreshScope
 public class DemoController {
@@ -34,6 +36,18 @@ public class DemoController {
 		System.out.println(String.join(",", event.getKeys()));
 		System.out.println(event.getFile().getName());
 		System.out.println(event.getFileEvent());
+	}
+
+	@PostConstruct
+	public void init() {
+		new Thread(() -> {
+			try {
+				Thread.sleep(3600000);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 }

@@ -67,15 +67,21 @@ This starter requires the [Spring Cloud Context](https://cloud.spring.io/spring-
     <artifactId>spring-cloud-starter</artifactId>
 </dependency>
 ```
-
-Available Spring Boot bootstrap configuration parameter (either  `bootstrap.properties` or `bootstrap.yaml`):
+Specify the configuration file in the `bootstrap.properties` or `bootstrap.yaml`:
 ```
 propertysource.reload.properties-files=config/foo.properties,config/bar.properties
-propertysource.reload.poll-interval=5000
-propertysource.reload.ignore-resource-not-found=true
-propertysource.reload.strategy=refresh_environment
+
 ```
-Once the contents of the configuration file specified in `propertysource.reload.properties-files` are change, the application is reload automatically.
+
+Other available Spring Boot bootstrap configuration parameter:
+```
+propertysource.reload.poll-interval=5s
+propertysource.reload.strategy=refresh_environment
+propertysource.reload.max-wait-for-shutdown=2s
+propertysource.reload.ignore-resource-not-found=true
+propertysource.reload.ignore-resource-load-error=true
+```
+Once the content of the configuration file specified in `propertysource.reload.properties-files` is change, the application is reload automatically.
 
 # Reload Strategy
 There are four strategies
@@ -105,7 +111,7 @@ Please read [spring documentation](https://cloud.spring.io/spring-cloud-static/s
 In a short description, the `@ConfigurationProperties` beans are rebind, but `@Value` are not by default. Any bean using `@Value` to inject the configuration must use `@RefreshScope` to receive the new change.
 
 # Delete Configuration at Runtime
-It's tough to handle the configuration deletion. So try to always keep the keys at runtime. Another solution it to use "@RefreshScope" at any bean depending on the configuration may change during runtime.
+It's very difficult to handle the configuration deletion. Try to always keep the keys at runtime. Another solution is to use "@RefreshScope" at any bean depending on the configuration may change during runtime.
 
 
 

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.github.topikachu</groupId>
-        <artifactId>propertysource-reload-parent</artifactId>
+        <artifactId>propertysource-reload</artifactId>
         <version>0.0.4-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>

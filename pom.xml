@@ -7,7 +7,7 @@
         <version>2.3.0.RELEASE</version>
     </parent>
     <groupId>io.github.topikachu</groupId>
-    <artifactId>propertysource-reload-parent</artifactId>
+    <artifactId>propertysource-reload</artifactId>
     <version>0.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://github.com/topikachu/spring-propertysource-reload</url>

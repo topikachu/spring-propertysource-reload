@@ -25,7 +25,7 @@ public class ReloadableWatch {
 
 	@SneakyThrows
 	public void start() {
-		monitor = new FileAlterationMonitor(reloadProperties.getPollInterval());
+		monitor = new FileAlterationMonitor(reloadProperties.getPollInterval().toMillis());
 		monitor.setThreadFactory(threadFactory);
 		FileAlterationListener propertySourceListener = new FileAlterationListenerAdaptor() {
 			@Override

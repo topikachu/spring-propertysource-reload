@@ -7,10 +7,16 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.annotation.PreDestroy;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Builder
 public class ReloadableWatch {
@@ -21,12 +27,10 @@ public class ReloadableWatch {
 
 	private FileAlterationMonitor monitor;
 
-	private ThreadFactory threadFactory;
-
 	@SneakyThrows
 	public void start() {
 		monitor = new FileAlterationMonitor(reloadProperties.getPollInterval().toMillis());
-		monitor.setThreadFactory(threadFactory);
+		monitor.setThreadFactory(new ThreadPoolTaskExecutor());
 		FileAlterationListener propertySourceListener = new FileAlterationListenerAdaptor() {
 			@Override
 			public void onFileChange(File file) {
@@ -43,10 +47,16 @@ public class ReloadableWatch {
 				reloadExecutor.executeReload(file, PropertySourceReloadEvent.FileEvent.DELETE);
 			}
 		};
-		reloadProperties.getPropertiesFiles().forEach(propertyFile -> {
-			File file = new File(propertyFile);
-			File folder = file.getParentFile();
-			FileAlterationObserver observer = new FileAlterationObserver(folder, new NameFileFilter(file.getName()));
+		reloadProperties.getPropertiesFiles().stream().map(location -> {
+			try {
+				return new File(location).getCanonicalFile();
+			}
+			catch (IOException ex) {
+				throw new ReloadableException("Can't get canonical file");
+			}
+		}).collect(groupingBy(File::getParentFile)).forEach((parent, files) -> {
+			List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
+			FileAlterationObserver observer = new FileAlterationObserver(parent, new NameFileFilter(fileNames));
 			observer.addListener(propertySourceListener);
 			monitor.addObserver(observer);
 		});

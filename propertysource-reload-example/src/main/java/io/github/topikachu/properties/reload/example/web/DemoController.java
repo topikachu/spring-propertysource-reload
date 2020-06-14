@@ -38,16 +38,16 @@ public class DemoController {
 		System.out.println(event.getFileEvent());
 	}
 
-	@PostConstruct
-	public void init() {
-		new Thread(() -> {
-			try {
-				Thread.sleep(3600000);
-			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}).start();
-	}
+	// @PostConstruct
+	// public void init() {
+	// new Thread(() -> {
+	// try {
+	// Thread.sleep(3600000);
+	// }
+	// catch (InterruptedException e) {
+	// e.printStackTrace();
+	// }
+	// }).start();
+	// }
 
 }

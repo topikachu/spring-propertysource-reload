@@ -22,7 +22,7 @@ public class ConfigReloadAutoConfiguration {
 	public ReloadableWatch fileAlterationObserver(ReloadableProperties reloadableProperties,
 			ReloadExecutor reloadExecutor) {
 		ReloadableWatch reloadableWatch = ReloadableWatch.builder().reloadProperties(reloadableProperties)
-				.reloadExecutor(reloadExecutor).threadFactory(new ThreadPoolTaskExecutor()).build();
+				.reloadExecutor(reloadExecutor).build();
 		reloadableWatch.start();
 		return reloadableWatch;
 	}

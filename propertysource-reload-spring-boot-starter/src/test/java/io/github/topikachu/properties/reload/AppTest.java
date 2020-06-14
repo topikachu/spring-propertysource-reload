@@ -50,17 +50,20 @@ public class AppTest {
 	@SpyBean
 	private PropertySourceReloadEventListener propertySourceReloadEventListener;
 
-	private static File file = new File("test-config/app.properties");
+	private static File appProperties = new File("test-config/app.properties");
+
+	private static File app2Properties = new File("test-config/app2.properties");
 
 	@BeforeClass
 	static public void initConfigFile() throws IOException {
-		FileUtils.touch(file);
-		writePropertiesFileWithValue("World");
+		FileUtils.touch(appProperties);
+		writePropertiesFileWithValue(appProperties, "bean.name", "World");
+		FileUtils.touch(app2Properties);
 	}
 
-	private static void writePropertiesFileWithValue(String word) throws IOException {
+	private static void writePropertiesFileWithValue(File file, String s, String word) throws IOException {
 		Properties properties = new Properties();
-		properties.setProperty("bean.name", word);
+		properties.setProperty(s, word);
 		try (FileOutputStream fos = new FileOutputStream(file)) {
 			properties.store(fos, "gen by test");
 			fos.flush();
@@ -73,7 +76,8 @@ public class AppTest {
 
 		assertGreetingApiWithContent("Hello World");
 
-		writePropertiesFileWithValue("World2");
+		writePropertiesFileWithValue(appProperties, "bean.name", "World2");
+		// writePropertiesFileWithValue(app2Properties, "bean.name2", "World2");
 
 		lock.lock();
 		condition.await();
@@ -89,7 +93,7 @@ public class AppTest {
 		ArgumentCaptor<PropertySourceReloadEvent> captor = ArgumentCaptor.forClass(PropertySourceReloadEvent.class);
 		verify(propertySourceReloadEventListener, times(1)).onRefresh(captor.capture());
 		PropertySourceReloadEvent captorPropertySourceReloadEvent = captor.getValue();
-		assertThat(captorPropertySourceReloadEvent.getKeys()).containsOnly("bean.name");
+		assertThat(captorPropertySourceReloadEvent.getKeys()).contains("bean.name");
 		assertThat(captorPropertySourceReloadEvent.getFileEvent())
 				.isEqualTo(PropertySourceReloadEvent.FileEvent.CHANGE);
 		assertThat(captorPropertySourceReloadEvent.getFile()).hasName("app.properties");

@@ -1,5 +1,5 @@
 # PropertySource Reload Spring Framework Boot Starters
-
+![Java CI with Maven](https://github.com/topikachu/spring-propertysource-reload/workflows/Java%20CI%20with%20Maven/badge.svg)
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**

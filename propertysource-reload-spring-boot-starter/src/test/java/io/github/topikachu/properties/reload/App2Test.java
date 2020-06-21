@@ -1,6 +1,6 @@
 package io.github.topikachu.properties.reload;
 
-import io.github.topikachu.properties.reload.example.App;
+import io.github.topikachu.properties.reload.example2.App2;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -18,7 +18,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -35,10 +34,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = RANDOM_PORT, classes = App.class)
-@ActiveProfiles(profiles = "files")
-@Import({ AppTest.LockConfiguration.class, AppTest.PropertySourceReloadEventListener.class })
-public class AppTest {
+@SpringBootTest(webEnvironment = RANDOM_PORT, classes = App2.class)
+@Import({ App2Test.LockConfiguration.class, App2Test.PropertySourceReloadEventListener.class })
+public class App2Test {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -61,7 +59,7 @@ public class AppTest {
 		FileUtils.touch(appProperties);
 		writePropertiesFileWithValue(appProperties, "bean.name", "World");
 		FileUtils.touch(app2Properties);
-		ReloadableAnnotationUtil.setMainClass(App.class);
+		ReloadableAnnotationUtil.setMainClass(App2.class);
 	}
 
 	private static void writePropertiesFileWithValue(File file, String s, String word) throws IOException {
@@ -75,7 +73,7 @@ public class AppTest {
 
 	@Test()
 	@SneakyThrows
-	public void testApp() {
+	public void testApp2() {
 
 		assertGreetingApiWithContent("Hello World");
 

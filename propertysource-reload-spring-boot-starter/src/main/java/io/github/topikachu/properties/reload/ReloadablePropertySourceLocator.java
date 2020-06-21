@@ -1,8 +1,7 @@
 package io.github.topikachu.properties.reload;
 
 import lombok.Builder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
@@ -17,17 +16,21 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@Builder
 @Order
+@CommonsLog
 public class ReloadablePropertySourceLocator implements PropertySourceLocator {
-
-	private final Log logger = LogFactory.getLog(getClass());
 
 	private ResourceLoader resourceLoader;
 
 	private ReloadableProperties reloadProperties;
 
 	private List<PropertySourceLoader> propertySourceLoaders;
+
+	@Builder
+	public ReloadablePropertySourceLocator(ResourceLoader resourceLoader, ReloadableProperties reloadProperties) {
+		this.resourceLoader = resourceLoader;
+		this.reloadProperties = reloadProperties;
+	}
 
 	@PostConstruct
 	public void init() {
@@ -43,15 +46,19 @@ public class ReloadablePropertySourceLocator implements PropertySourceLocator {
 	@Override
 	public Collection<PropertySource<?>> locateCollection(Environment environment) {
 		CompositePropertySource reloadablePropertySources = new CompositePropertySource("ReloadablePropertySources");
-		reloadProperties.getPropertiesFiles().stream()
-				.filter(location -> location != null && !location.trim().equals("")).map(location -> {
+		ReloadableUtil
+				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), ReloadableAnnotationUtil.getAllSource())
+				.map(location -> {
 					try {
+						if (log.isDebugEnabled()) {
+							log.debug("Try to load resource from [ " + location + " ]");
+						}
 						String resolvedLocation = environment.resolveRequiredPlaceholders("file:" + location);
 						Resource resource = this.resourceLoader.getResource(resolvedLocation);
 						if (!resource.exists()) {
 							if (reloadProperties.isIgnoreResourceNotFound()) {
-								if (logger.isInfoEnabled()) {
-									logger.info("Can't configuration find file [" + location + "]");
+								if (log.isInfoEnabled()) {
+									log.info("Can't find the configuration file [" + location + "]");
 								}
 								return null;
 							}
@@ -68,8 +75,8 @@ public class ReloadablePropertySourceLocator implements PropertySourceLocator {
 					}
 					catch (Exception ex) {
 						if (reloadProperties.isIgnoreResourceLoadError()) {
-							if (logger.isInfoEnabled()) {
-								logger.info("Can't load configuration file [" + location + "]" + ex.getMessage());
+							if (log.isInfoEnabled()) {
+								log.info("Can't load configuration file [" + location + "]" + ex.getMessage());
 							}
 							return null;
 						}

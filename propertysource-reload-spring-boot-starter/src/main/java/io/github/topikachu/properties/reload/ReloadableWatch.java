@@ -2,6 +2,7 @@ package io.github.topikachu.properties.reload;
 
 import lombok.Builder;
 import lombok.SneakyThrows;
+import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
@@ -13,12 +14,12 @@ import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
 @Builder
+@CommonsLog
 public class ReloadableWatch {
 
 	private ReloadableProperties reloadProperties;
@@ -47,19 +48,28 @@ public class ReloadableWatch {
 				reloadExecutor.executeReload(file, PropertySourceReloadEvent.FileEvent.DELETE);
 			}
 		};
-		reloadProperties.getPropertiesFiles().stream().map(location -> {
-			try {
-				return new File(location).getCanonicalFile();
-			}
-			catch (IOException ex) {
-				throw new ReloadableException("Can't get canonical file");
-			}
-		}).collect(groupingBy(File::getParentFile)).forEach((parent, files) -> {
-			List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-			FileAlterationObserver observer = new FileAlterationObserver(parent, new NameFileFilter(fileNames));
-			observer.addListener(propertySourceListener);
-			monitor.addObserver(observer);
-		});
+		ReloadableUtil
+				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), ReloadableAnnotationUtil.getAllSource())
+				.map(location -> {
+					try {
+						if (log.isDebugEnabled()) {
+							log.debug("File [ " + location + " ] to monitor");
+						}
+						return new File(location).getCanonicalFile();
+					}
+					catch (IOException ex) {
+						throw new ReloadableException("Can't get canonical file");
+					}
+				}).collect(groupingBy(File::getParentFile)).forEach((parent, files) -> {
+					List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
+					if (log.isDebugEnabled()) {
+						log.debug("Watch at [ " + parent + " ]");
+						log.debug(String.join(" ", fileNames));
+					}
+					FileAlterationObserver observer = new FileAlterationObserver(parent, new NameFileFilter(fileNames));
+					observer.addListener(propertySourceListener);
+					monitor.addObserver(observer);
+				});
 		monitor.start();
 	}
 

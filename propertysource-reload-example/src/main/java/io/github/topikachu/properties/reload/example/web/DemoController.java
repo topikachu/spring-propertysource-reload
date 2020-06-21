@@ -1,6 +1,7 @@
 package io.github.topikachu.properties.reload.example.web;
 
 import io.github.topikachu.properties.reload.PropertySourceReloadEvent;
+import io.github.topikachu.properties.reload.annotation.ReloadablePropertySource;
 import io.github.topikachu.properties.reload.example.config.ApplicationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,10 +11,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-
 @RestController
 @RefreshScope
+@ReloadablePropertySource("config/foo.properties")
 public class DemoController {
 
 	@Autowired

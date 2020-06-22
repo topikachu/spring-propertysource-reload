@@ -8,6 +8,7 @@
 - [Repository](#repository)
 - [Requirements and Downloads](#requirements-and-downloads)
 - [How to enable external property source reloading](#how-to-enable-external-property-source-reloading)
+- [Spring Boot bootstrap configuration parameter:](#spring-boot-bootstrap-configuration-parameter)
 - [Reload Strategy](#reload-strategy)
 - [PropertySourceReloadEvent](#propertysourcereloadevent)
 - [Environment Changes](#environment-changes)

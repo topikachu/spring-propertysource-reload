@@ -8,7 +8,7 @@
     </parent>
     <groupId>io.github.topikachu</groupId>
     <artifactId>propertysource-reload</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://github.com/topikachu/spring-propertysource-reload</url>
     <name>${project.groupId}:${project.artifactId}</name>
@@ -31,7 +31,7 @@
         <connection>scm:git:git//github.com/topikachu/spring-propertysource-reload.git</connection>
         <developerConnection>scm:git:git@github.com:topikachu/spring-propertysource-reload.git</developerConnection>
         <url>https://github.com/topikachu/spring-propertysource-reload/tree/master</url>
-        <tag>propertysource-reload-0.0.6</tag>
+        <tag>propertysource-reload-parent-0.0.1</tag>
     </scm>
     <properties>
         <!-- Dependency Versions -->

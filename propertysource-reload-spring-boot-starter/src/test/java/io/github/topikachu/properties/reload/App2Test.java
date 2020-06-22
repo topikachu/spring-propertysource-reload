@@ -18,6 +18,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = App2.class)
 @Import({ App2Test.LockConfiguration.class, App2Test.PropertySourceReloadEventListener.class })
+@ActiveProfiles(profiles = "anno")
 public class App2Test {
 
 	@Autowired
@@ -50,9 +52,9 @@ public class App2Test {
 	@SpyBean
 	private PropertySourceReloadEventListener propertySourceReloadEventListener;
 
-	private static File appProperties = new File("test-config/app.properties");
+	private static File appProperties = new File("test-config/app-anno.properties");
 
-	private static File app2Properties = new File("test-config/app2.properties");
+	private static File app2Properties = new File("test-config/app2-anno.properties");
 
 	@BeforeClass
 	static public void initConfigFile() throws IOException {
@@ -95,7 +97,7 @@ public class App2Test {
 		assertThat(captorPropertySourceReloadEvent.getKeys()).contains("bean.name");
 		assertThat(captorPropertySourceReloadEvent.getFileEvent())
 				.isEqualTo(PropertySourceReloadEvent.FileEvent.CHANGE);
-		assertThat(captorPropertySourceReloadEvent.getFile()).hasName("app.properties");
+		assertThat(captorPropertySourceReloadEvent.getFile()).hasName("app-anno.properties");
 	}
 
 	private void assertGreetingApiWithContent(String content) {

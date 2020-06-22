@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnProperty(value = "propertysource.reload.enabled", matchIfMissing = true)
 @ConditionalOnClass({ ContextRefresher.class, RestartEndpoint.class })
 @Configuration
-public class BootstrapConfiguration {
+public class AutoConfiguration {
 
 	@EnableConfigurationProperties(ReloadableProperties.class)
 	@Configuration(proxyBeanMethods = false)
-	@Import({ ReloadablePropertySourceLocator.class, ReloadableAnnotationBean.class })
+	@Import({ ReloadableWatch.class, ReloadExecutor.class })
 	static class ReloadableConfiguration {
 
 	}

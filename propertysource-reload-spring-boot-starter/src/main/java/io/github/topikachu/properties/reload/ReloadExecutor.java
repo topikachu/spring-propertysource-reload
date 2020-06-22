@@ -1,14 +1,15 @@
 package io.github.topikachu.properties.reload;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.Builder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.context.refresh.ContextRefresher;
 import org.springframework.cloud.context.restart.RestartEndpoint;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.Optional;
@@ -19,20 +20,26 @@ import static io.github.topikachu.properties.reload.ReloadableProperties.ReloadS
 import static io.github.topikachu.properties.reload.ReloadableProperties.StrategyType.REFRESH;
 import static io.github.topikachu.properties.reload.ReloadableProperties.StrategyType.RESTART_OR_SHUTDOWN;
 
-@Builder
 @SuppressFBWarnings("DM_EXIT")
+@Component
 public class ReloadExecutor {
 
 	private final Log logger = LogFactory.getLog(getClass());
 
+	@Autowired
 	private ReloadableProperties reloadableProperties;
 
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
+
+	@Autowired
 	private ContextRefresher contextRefresher;
 
-	private ApplicationEventPublisher applicationEventPublisher;
+	@Autowired
 
 	private ConfigurableApplicationContext applicationContext;
 
+	@Autowired(required = false)
 	private RestartEndpoint restartEndpoint;
 
 	public void executeReload(File file, PropertySourceReloadEvent.FileEvent event) {

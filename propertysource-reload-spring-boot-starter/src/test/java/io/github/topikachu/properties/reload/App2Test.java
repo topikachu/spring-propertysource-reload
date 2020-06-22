@@ -59,7 +59,6 @@ public class App2Test {
 		FileUtils.touch(appProperties);
 		writePropertiesFileWithValue(appProperties, "bean.name", "World");
 		FileUtils.touch(app2Properties);
-		ReloadableAnnotationUtil.setMainClass(App2.class);
 	}
 
 	private static void writePropertiesFileWithValue(File file, String s, String word) throws IOException {
@@ -78,7 +77,6 @@ public class App2Test {
 		assertGreetingApiWithContent("Hello World");
 
 		writePropertiesFileWithValue(appProperties, "bean.name", "World2");
-		// writePropertiesFileWithValue(app2Properties, "bean.name2", "World2");
 
 		lock.lock();
 		condition.await();

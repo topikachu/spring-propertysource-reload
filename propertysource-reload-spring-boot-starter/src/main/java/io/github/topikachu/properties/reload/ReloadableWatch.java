@@ -1,6 +1,5 @@
 package io.github.topikachu.properties.reload;
 
-import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.apachecommons.CommonsLog;
 import org.apache.commons.io.filefilter.NameFileFilter;
@@ -8,8 +7,10 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
@@ -18,17 +19,22 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
-@Builder
 @CommonsLog
 public class ReloadableWatch {
 
+	@Autowired
 	private ReloadableProperties reloadProperties;
 
+	@Autowired
 	private ReloadExecutor reloadExecutor;
 
 	private FileAlterationMonitor monitor;
 
+	@Autowired
+	private ReloadableAnnotationBean reloadableAnnotationUtil;
+
 	@SneakyThrows
+	@PostConstruct
 	public void start() {
 		monitor = new FileAlterationMonitor(reloadProperties.getPollInterval().toMillis());
 		monitor.setThreadFactory(new ThreadPoolTaskExecutor());
@@ -49,7 +55,7 @@ public class ReloadableWatch {
 			}
 		};
 		ReloadableUtil
-				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), ReloadableAnnotationUtil.getAllSource())
+				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), reloadableAnnotationUtil.getAllSource())
 				.map(location -> {
 					try {
 						if (log.isDebugEnabled()) {

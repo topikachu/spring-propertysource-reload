@@ -61,7 +61,6 @@ public class AppTest {
 		FileUtils.touch(appProperties);
 		writePropertiesFileWithValue(appProperties, "bean.name", "World");
 		FileUtils.touch(app2Properties);
-		ReloadableAnnotationUtil.setMainClass(App.class);
 	}
 
 	private static void writePropertiesFileWithValue(File file, String s, String word) throws IOException {

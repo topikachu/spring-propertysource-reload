@@ -5,6 +5,7 @@ import io.github.topikachu.properties.reload.annotation.ReloadablePropertySource
 import lombok.extern.apachecommons.CommonsLog;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,29 +17,26 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 @CommonsLog
-public abstract class ReloadableAnnotationUtil {
+@Component
+public class ReloadableAnnotationBean {
 
-	private static List<String> reloadableSources = null;
+	private List<String> reloadableSources = null;
 
-	private static final ReadWriteLock lock = new ReentrantReadWriteLock();
+	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-	private static Class<?> mainClass;
+	private Class<?> mainClass;
 
-	public static void setMainClass(Class<?> mainClass) {
-		ReloadableAnnotationUtil.mainClass = mainClass;
-	}
-
-	static public List<String> getAllSource() {
-		Lock readLock = ReloadableAnnotationUtil.lock.readLock();
+	public List<String> getAllSource() {
+		Lock readLock = lock.readLock();
 		readLock.lock();
 		if (reloadableSources == null) {
 			readLock.unlock();
-			Lock writerLock = ReloadableAnnotationUtil.lock.writeLock();
+			Lock writerLock = lock.writeLock();
 			writerLock.lock();
 			try {
 				if (reloadableSources == null) {
 					if (mainClass == null) {
-						mainClass = deduceMainApplicationClass();
+						mainClass = ApplicationHolder.getSpringApplication().getMainApplicationClass();
 					}
 					if (mainClass == null) {
 						if (log.isWarnEnabled()) {
@@ -69,21 +67,6 @@ public abstract class ReloadableAnnotationUtil {
 			return reloadableSources;
 		}
 
-	}
-
-	private static Class<?> deduceMainApplicationClass() {
-		try {
-			StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
-			for (StackTraceElement stackTraceElement : stackTrace) {
-				if ("main".equals(stackTraceElement.getMethodName())) {
-					return Class.forName(stackTraceElement.getClassName());
-				}
-			}
-		}
-		catch (ClassNotFoundException ex) {
-			// Swallow and continue
-		}
-		return null;
 	}
 
 }

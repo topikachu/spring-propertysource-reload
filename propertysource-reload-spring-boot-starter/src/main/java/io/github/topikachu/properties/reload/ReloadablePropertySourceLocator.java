@@ -1,7 +1,7 @@
 package io.github.topikachu.properties.reload;
 
-import lombok.Builder;
 import lombok.extern.apachecommons.CommonsLog;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
 import org.springframework.core.annotation.Order;
@@ -11,6 +11,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.SpringFactoriesLoader;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -18,19 +19,19 @@ import java.util.*;
 
 @Order
 @CommonsLog
+@Component
 public class ReloadablePropertySourceLocator implements PropertySourceLocator {
 
+	@Autowired
 	private ResourceLoader resourceLoader;
 
+	@Autowired
 	private ReloadableProperties reloadProperties;
 
-	private List<PropertySourceLoader> propertySourceLoaders;
+	@Autowired
+	private ReloadableAnnotationBean reloadableAnnotationUtil;
 
-	@Builder
-	public ReloadablePropertySourceLocator(ResourceLoader resourceLoader, ReloadableProperties reloadProperties) {
-		this.resourceLoader = resourceLoader;
-		this.reloadProperties = reloadProperties;
-	}
+	private List<PropertySourceLoader> propertySourceLoaders;
 
 	@PostConstruct
 	public void init() {
@@ -47,7 +48,7 @@ public class ReloadablePropertySourceLocator implements PropertySourceLocator {
 	public Collection<PropertySource<?>> locateCollection(Environment environment) {
 		CompositePropertySource reloadablePropertySources = new CompositePropertySource("ReloadablePropertySources");
 		ReloadableUtil
-				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), ReloadableAnnotationUtil.getAllSource())
+				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), reloadableAnnotationUtil.getAllSource())
 				.map(location -> {
 					try {
 						if (log.isDebugEnabled()) {

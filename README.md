@@ -67,10 +67,10 @@ This starter requires the [Spring Cloud Context](https://cloud.spring.io/spring-
 
 # How to enable external property source reloading
 1. Use annotation at class level  
-```@ReloadablePropertySource("test-config/foo-anno.properties")```  
+`@ReloadablePropertySource({ "config/a.properties", "config/b.properties" })`
 The starter only scans the packages same as or sub of the application's. And it's **NOT** aware of `@ComponentScan`
 1. Specify the configuration file in the `bootstrap.properties` or `bootstrap.yaml`:  
-```propertysource.reload.properties-files=config/foo.properties,config/bar.properties```
+`propertysource.reload.properties-files=config/foo.properties,config/bar.properties`
 
 # Spring Boot bootstrap configuration parameter:
 ```

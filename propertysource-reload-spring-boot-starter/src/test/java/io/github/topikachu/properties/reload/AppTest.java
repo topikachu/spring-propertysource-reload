@@ -58,6 +58,7 @@ public class AppTest {
 
 	@BeforeClass
 	static public void initConfigFile() throws IOException {
+		FileUtils.forceMkdir(new File("test-config"));
 		FileUtils.cleanDirectory(new File("test-config"));
 
 		FileUtils.touch(appProperties);

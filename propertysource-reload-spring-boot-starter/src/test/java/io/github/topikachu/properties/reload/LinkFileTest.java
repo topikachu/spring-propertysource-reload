@@ -70,6 +70,7 @@ public class LinkFileTest {
 	static public void initConfigFile() throws IOException {
 
 		org.junit.Assume.assumeTrue(SystemUtils.IS_OS_UNIX);
+		FileUtils.forceMkdir(new File("test-config"));
 
 		FileUtils.cleanDirectory(new File("test-config"));
 

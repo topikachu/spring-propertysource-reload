@@ -67,7 +67,6 @@
 
     <modules>
         <module>propertysource-reload-spring-boot-starter</module>
-        <module>propertysource-reload-example</module>
     </modules>
 
 
@@ -257,6 +256,13 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>example</id>
+            <modules>
+                <module>propertysource-reload-example</module>
+            </modules>
+
         </profile>
     </profiles>
 

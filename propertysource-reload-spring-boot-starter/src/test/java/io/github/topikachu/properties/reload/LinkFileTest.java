@@ -3,6 +3,7 @@ package io.github.topikachu.properties.reload;
 import io.github.topikachu.properties.reload.example.App;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +25,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,8 +41,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT, classes = App.class)
 @ActiveProfiles(profiles = "files")
-@Import({ AppTest.LockConfiguration.class, AppTest.PropertySourceReloadEventListener.class })
-public class AppTest {
+@Import({ LinkFileTest.LockConfiguration.class, LinkFileTest.PropertySourceReloadEventListener.class })
+public class LinkFileTest {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
@@ -52,17 +56,35 @@ public class AppTest {
 	@SpyBean
 	private PropertySourceReloadEventListener propertySourceReloadEventListener;
 
+	private static File appTargetProperties = new File("test-config/app-target.properties");
+
+	private static File appNewTargetProperties = new File("test-config/app-new-target.properties");
+
+	private static File app2TargetProperties = new File("test-config/app2-target.properties");
+
 	private static File appProperties = new File("test-config/app.properties");
 
 	private static File app2Properties = new File("test-config/app2.properties");
 
 	@BeforeClass
 	static public void initConfigFile() throws IOException {
+
+		org.junit.Assume.assumeTrue(SystemUtils.IS_OS_UNIX);
+
 		FileUtils.cleanDirectory(new File("test-config"));
 
-		FileUtils.touch(appProperties);
-		writePropertiesFileWithValue(appProperties, "bean.name", "World");
-		FileUtils.touch(app2Properties);
+		FileUtils.touch(appTargetProperties);
+		writePropertiesFileWithValue(appTargetProperties, "bean.name", "World");
+		FileUtils.touch(app2TargetProperties);
+
+		if (Files.exists(appProperties.toPath(), NOFOLLOW_LINKS)) {
+			Files.delete(appProperties.toPath());
+		}
+		if (Files.exists(app2Properties.toPath(), NOFOLLOW_LINKS)) {
+			Files.delete(app2Properties.toPath());
+		}
+		Files.createSymbolicLink(appProperties.toPath(), Paths.get(appTargetProperties.getName()));
+		Files.createSymbolicLink(app2Properties.toPath(), Paths.get(app2TargetProperties.getName()));
 	}
 
 	private static void writePropertiesFileWithValue(File file, String s, String word) throws IOException {
@@ -80,7 +102,15 @@ public class AppTest {
 
 		assertGreetingApiWithContent("Hello World");
 
-		writePropertiesFileWithValue(appProperties, "bean.name", "World2");
+		writePropertiesFileWithValue(appNewTargetProperties, "bean.name", "World2");
+		if (Files.exists(appProperties.toPath(), NOFOLLOW_LINKS)) {
+			Files.delete(appProperties.toPath());
+		}
+		if (Files.exists(appTargetProperties.toPath(), NOFOLLOW_LINKS)) {
+			Files.delete(appTargetProperties.toPath());
+		}
+		Files.createSymbolicLink(appProperties.toPath(), Paths.get(appNewTargetProperties.getName()));
+
 		// writePropertiesFileWithValue(app2Properties, "bean.name2", "World2");
 
 		lock.lock();

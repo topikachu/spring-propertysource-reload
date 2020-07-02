@@ -58,6 +58,8 @@ public class App2Test {
 
 	@BeforeClass
 	static public void initConfigFile() throws IOException {
+		FileUtils.cleanDirectory(new File("test-config"));
+		FileUtils.touch(appProperties);
 		FileUtils.touch(appProperties);
 		writePropertiesFileWithValue(appProperties, "bean.name", "World");
 		FileUtils.touch(app2Properties);

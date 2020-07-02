@@ -13,7 +13,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,22 +58,22 @@ public class ReloadableWatch {
 		ReloadableUtil
 				.getSourcesAsStream(reloadProperties.getPropertiesFiles(), reloadableAnnotationUtil.getAllSource())
 				.map(location -> {
-					try {
-						if (log.isDebugEnabled()) {
-							log.debug("File [ " + location + " ] to monitor");
-						}
-						return new File(location).getCanonicalFile();
+
+					if (log.isDebugEnabled()) {
+						log.debug("File [ " + location + " ] to monitor");
 					}
-					catch (IOException ex) {
-						throw new ReloadableException("Can't get canonical file");
-					}
-				}).collect(groupingBy(File::getParentFile)).forEach((parent, files) -> {
-					List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
+					return Paths.get(location).normalize().toAbsolutePath();
+
+				}).collect(groupingBy(Path::getParent)).forEach((parent, files) -> {
+					File parentFile = parent.toFile();
+					List<String> fileNames = files.stream().map(path -> path.getFileName().toString())
+							.collect(Collectors.toList());
 					if (log.isDebugEnabled()) {
 						log.debug("Watch at [ " + parent + " ]");
 						log.debug(String.join(" ", fileNames));
 					}
-					FileAlterationObserver observer = new FileAlterationObserver(parent, new NameFileFilter(fileNames));
+					FileAlterationObserver observer = new FileAlterationObserver(parentFile,
+							new NameFileFilter(fileNames));
 					observer.addListener(propertySourceListener);
 					monitor.addObserver(observer);
 				});

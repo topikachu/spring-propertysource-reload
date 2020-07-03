@@ -34,7 +34,7 @@ Repository contains:
 
 Requirements:
   * Java 1.8
-  * Spring Framework Boot > 2.x.x (web)
+  * Spring Framework Boot > 2.x.x
 
 Gradle:
 
@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.topikachu:propertysource-reload-spring-boot-starter:0.0.6'
+  implementation 'io.github.topikachu:propertysource-reload-spring-boot-starter:0.0.7'
 }
 ```
 
@@ -54,7 +54,7 @@ Maven:
 <dependency>
     <groupId>io.github.topikachu</groupId>
     <artifactId>propertysource-reload-spring-boot-starter</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
 </dependency>
 ```
 This starter requires the [Spring Cloud Context](https://cloud.spring.io/spring-cloud-commons/multi/multi__spring_cloud_context_application_context_services.html) . Add at least one Spring Cloud module, for example:
@@ -69,7 +69,7 @@ This starter requires the [Spring Cloud Context](https://cloud.spring.io/spring-
 # How to enable external property source reloading
 1. Use annotation at class level  
 `@ReloadablePropertySource({ "config/a.properties", "config/b.properties" })`
-The starter only scans the packages same as or sub of the application's. And it's **NOT** aware of `@ComponentScan`
+The starter only scans the packages same as or sub of the application's. It's **NOT** aware of `@ComponentScan`
 1. Specify the configuration file in the `bootstrap.properties` or `bootstrap.yaml`:  
 `propertysource.reload.properties-files=config/foo.properties,config/bar.properties`
 

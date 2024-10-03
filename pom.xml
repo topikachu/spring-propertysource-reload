@@ -47,7 +47,7 @@
         <groovy.version>2.4.12</groovy.version>
         <restassured.version>3.0.2</restassured.version>
         <spock-spring.version>1.1-groovy-2.4</spock-spring.version>
-        <commons-io.version>2.7</commons-io.version>
+        <commons-io.version>2.14.0</commons-io.version>
         <spotbugs-annotations.version>4.0.4</spotbugs-annotations.version>
         <lombok.version>1.18.12</lombok.version>
         <reflections.version>0.9.12</reflections.version>
